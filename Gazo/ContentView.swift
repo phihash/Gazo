@@ -14,8 +14,12 @@ struct ContentView: View {
             
             VStack{
                 Text("圧縮率を選んでください")
-                Text("現在の圧縮率は\(Int(viewModel.compressionQuality * 100))")
-                Slider()
+                Text("現在の圧縮率は\(Int(viewModel.compressionQuality * 100))%")
+                Slider(value: $viewModel.compressionQuality, in: 0.1...1.0)
+                
+                Button("圧縮して保存"){
+                    viewModel.saveCompressedImages()
+                }.disabled(viewModel.selectedItems.isEmpty)
             }
         }
         .padding()
