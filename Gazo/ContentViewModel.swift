@@ -8,7 +8,7 @@ class ContentViewModel {
     var selectedImages: [UIImage] = []
     
     func loadImages() async {
-        selectedItems.removeAll()
+        selectedImages.removeAll()
         for items in selectedItems {
             do{
                 if let data = try await items.loadTransferable(type: Data.self), let uiImage = UIImage(data: data) {
