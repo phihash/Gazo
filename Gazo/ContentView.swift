@@ -6,9 +6,18 @@ struct ContentView: View {
     var body: some View {
         VStack {
             PhotosPicker("画像を選ぶ", selection: $viewModel.selectedItems, maxSelectionCount: 5,matching: .images)
-
+                .onChange(of: viewModel.selectedItems){
+                    Task{
+                        await viewModel.loadImages()
+                    }
+                }
+            
+            VStack{
+                Text("圧縮率を選んでください")
+                Text("現在の圧縮率は\(Int(viewModel.compressionQuality * 100))")
+                Slider()
+            }
         }
         .padding()
     }
-
 }
