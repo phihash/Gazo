@@ -5,8 +5,8 @@ struct ContentView: View {
     @State private var viewModel = ContentViewModel()
     var body: some View {
         VStack {
-            PhotosPicker("画像を選ぶ", selection: $viewModel.selectedItems, maxSelectionCount: 5,matching: .images)
-                .onChange(of: viewModel.selectedItems){
+            PhotosPicker("画像を選ぶ", selection: $viewModel.pickerItems, maxSelectionCount: 30,matching: .images)
+                .onChange(of: viewModel.pickerItems){
                     Task{
                         await viewModel.loadImages()
                     }
@@ -19,7 +19,7 @@ struct ContentView: View {
                 
                 Button("圧縮して保存"){
                     viewModel.saveCompressedImages()
-                }.disabled(viewModel.selectedItems.isEmpty)
+                }.disabled(viewModel.pickerItems.isEmpty)
             }
         }
         .padding()
