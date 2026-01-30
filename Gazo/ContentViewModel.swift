@@ -44,7 +44,19 @@ class ContentViewModel {
             if success {
                 print("保存成功")
             } else{
-                print("保存失敗しました: \(error?.localizedDescription ?? "")")       
+                print("保存失敗しました: \(error?.localizedDescription ?? "")")
+            }
+        }
+    }
+    
+    private func requestPermissionAndSave(_ compressedData:[Data]){
+        PHPhotoLibrary.requestAuthorization(for: .addOnly){ status  in
+            if status == .authorized || status == .limited {
+                Task{ @MainActor in
+                    self.saveImageToLibrary(compressedData)
+                }
+            } else{
+                print("許可が得られませんでした")
             }
         }
     }
@@ -54,18 +66,14 @@ class ContentViewModel {
         let status = PHPhotoLibrary.authorizationStatus(for: .addOnly)
         
         switch status {
-        case .authorized:
-            print("許可")
+        case .authorized, .limited:
+            saveImageToLibrary(compressedData)
         case .notDetermined:
-            print("まだ")
-        case .limited:
-            print("一部のみ許可")
-        case .restricted:
-        case .denied:
-            print("制限されてる")
-            
+            requestPermissionAndSave(compressedData)
+        case .restricted, .denied:
+            print("保存できません。設定から許可してください。")   
         @unknown default:
-            print("不明な状態")
+            print("保存できません。設定から許可してください。")
         }
     }
 }
